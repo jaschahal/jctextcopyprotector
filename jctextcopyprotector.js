@@ -1,16 +1,16 @@
-jQuery.fn.jctextcopyprotector = function(settings) {
+jQuery.fn.jccopyblock = function(settings) {
           settings = jQuery.extend({
             blockRightClick:true,
             blockDocTextSelection:true,
             useCSS:true,
-            blockPageSave:true,
+            blockPageSave:false,
             alertUser:false,
             alertMessage:'Sorry! Content copy is not allowed?',
             callback:function(){}
           },settings);
           if(settings.blockRightClick) {
             jQuery(document).contextmenu(function(evt){
-                if(settings.alertUser) {
+                if(settings.alertUser && settings.alertMessage.length > 0) {
                   alert(settings.alertMessage);
                 }
                 evt.preventDefault();        
@@ -19,7 +19,7 @@ jQuery.fn.jctextcopyprotector = function(settings) {
           }
           if(settings.blockDocTextSelection && !settings.useCSS) {
             jQuery(document)[0].onselectstart = function(evt) { 
-                if(settings.alertUser) {
+                if(settings.alertUser && settings.alertMessage.length > 0) {
                   alert(settings.alertMessage);
                 }
                 evt.preventDefault();
@@ -34,17 +34,13 @@ jQuery.fn.jctextcopyprotector = function(settings) {
                    '-ms-user-select':'none'
                });
           } 
-          if(settings.blockPageSave) {
-            var ctrl = false;
-            jQuery(window).keydown(function(e) {
-                if (e.keyCode == 17) ctrl = true;
-            }).keyup(function(e) {
-                if (e.keyCode == 17) ctrl = false;
-            });
-            jQuery(window).keydown(function(e) {
-                if (ctrl && (e.keyCode == 83 || e.keyCode == 115 || e.keyCode == 97 || e.keyCode == 65 || e.keyCode == 67 || e.keyCode == 99)) { // blocks CTRL c (copy)+a(select all)+s(save)
+            jQuery(document).keydown(function(e) {
+                if (settings.blockPageSave && e.ctrlKey && (e.which == 83 || e.which == 115 || e.which == 97 || e.which == 65 || e.which == 67 || e.which == 99)) { // blocks CTRL c (copy)+a(select all)+s(save)
+                  if(settings.alertUser && settings.alertMessage.length > 0) {
+                    alert(settings.alertMessage);
+                  }
+                  e.preventDefault();
                   return false;
                 }
-            });           
-          }
+            });                     
         };
