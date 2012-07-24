@@ -1,4 +1,4 @@
-jQuery.fn.jccopyblock = function(settings) {
+jQuery.fn.jctextcopyprotector = function(settings) {
           settings = jQuery.extend({
             blockRightClick:true,
             blockDocTextSelection:true,
